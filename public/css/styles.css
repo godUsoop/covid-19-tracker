@@ -1,0 +1,155 @@
+.top-header {
+    background-color: #ffe227;
+}
+
+
+.top-header h1 {
+    font-size: 50px;
+    color: white;
+    padding-left: 200px;
+}
+
+.header {
+    padding-bottom: 25px;
+    margin-top: 25px;
+}
+
+.header h2 { 
+    display: inline;
+    padding-left: 200px;
+    font-size: 25px;
+  }
+
+.top-category { 
+    float: right;
+    padding-right: 200px;
+    font-size: 25px;
+}
+
+
+.top-category a {
+    padding-left: 25px;
+    color: #5f5d5d;
+    text-decoration: none;
+}
+
+
+#globalCasesChart {
+    width: 100% !important;
+    height: 200px !important;
+}
+
+#globalDeathsChart {
+    width: 100% !important;
+    height: 200px !important;
+    float: right;
+}
+
+
+.top-heading {
+    padding: 25px 200px 0 200px;
+    font-size: 25px;
+
+}
+
+.top-float-container {
+    width: 100%;
+    height: 300px;
+    padding: 25px 200px 0 200px;
+}
+
+
+.top-float-child {
+    float: left;
+
+}
+
+.global-charts-heading {
+    font-size: 50px;
+    margin-bottom: 0;   
+    width: 70%;
+}
+
+.global-charts-des {
+    font-size: 25px;
+    margin-bottom: 0;
+    color: rgb(109, 109, 109);
+}
+
+.global1 {
+    width: 30%;
+}
+
+.global2 {
+    width: 70%;    
+    padding-left: 25px;
+}
+
+
+.float-container {
+    width: 100%;
+    height: 800px;
+    padding: 25px 200px 0 200px;
+}
+
+.float-child {
+    float: left;
+}  
+
+.region-charts-heading {
+    font-size: 25px;
+    margin-bottom: 15px;   
+    width: 70%;
+}
+
+.country-charts-heading {
+    font-size: 25px;
+    margin-bottom: 15px;   
+    width: 40%;
+}
+
+.region {
+    width: 30%;
+}
+
+.country {
+    width: 70%;    
+    padding-left: 25px;  
+}
+
+#continentChart {
+    width: 100% !important;
+    height: 500px !important;
+}
+
+#hardestHitChart {
+    width: 100% !important;
+    height: 500px !important;
+}
+
+
+#myMap {
+    height: 700px;
+}
+
+.mapConfirmed {
+    color: blue;
+    opacity: 0.8;
+}
+
+.mapDeaths {
+    color: red;
+    opacity: 0.8;
+}
+
+.mapRecovered {
+    color: green;
+    opacity: 0.8
+}
+
+
+.table-container {
+    padding: 50px 200px 0 200px;
+    height: 1000px;
+}
+

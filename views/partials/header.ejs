@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    
+
+    <!-- ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    
+
+    <!-- Data table -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+    
+
+    <title>Covid-19 Tracker</title>
+
+    
+</head>
+<body>
+    
+
+    <div class="top-header">
+        <h1>Covid-19 tracker</h1>
+    </div>
+    <div class="header">
+        <h2>Coronavirus Diease Dashboard</h2>
+        <div class="top-category">
+            <span><a href="/">Overview</a></span>
+            <span><a href="/table">Data Table</a></span>
+
+        </div>
+    </div>
+  </body>
+
+
+
+<div id="myMap"></div>
+<script type="text/javascript">
+    
+    const mapboxAccessToken = ""
+    
+    
+    
+    // load data
+    const worldData = $.ajax({
+        url: "",
+        dataType: "json",
+        error: function(xhr) {
+            alert(xhr.statusText + ": data can't load ");
+        }
+    });
+
+    // initialize the map until completely loading data
+    $.when(worldData).done(function() {
+        const data = worldData.responseJSON;
+
+        // transform JSON into geoJSON format
+        const geoJson = {
+            type: 'FeatureCollection',
+
+            // if country is empty from data and set a country default to {}
+            features: data.map((country = {}) => {
+                const {countryInfo = {}} = country;
+
+                // change long  to lng
+                const {lat, long: lng} = countryInfo;
+                return {
+                    type: 'Feature',
+                    properties: {
+                        ...country,
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                }
+            })
+        }
+
+        var myMap = L.map('myMap', {
+            "center": [46.81, 8.22],
+            "zoom": 3,
+            "minZoom": 3,
+            "maxZoom": 5,
+            "maxBounds": [[90,-180], [-90, 180]]
+        })
+
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/stanley09/ckk3mv0qm0b8217pmqhqh767y/tiles/256/{z}/{x}/{y}@2x?access_token=' + mapboxAccessToken, {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            noWrap: true,
+            bounds: [[90,-180], [-90, 180]],
+            accessToken: mapboxAccessToken
+        }).addTo(myMap);
+
+        // disable scroll-zooming initially
+        myMap.scrollWheelZoom.disable(); 
+    
+        // attach event on popup with specific properties
+        function onEachFeature(feature, layer) {
+            if (feature.properties && feature.properties.cases) {
+                const html = `
+                    <h6>${feature.properties.country}</h6>
+                    <ur style="list-style-type:none;">
+                        <li><span class="mapConfirmed">${feature.properties.cases.toLocaleString("en-US")}</span> Confirmed</li>
+                        <li><span class="mapDeaths">${feature.properties.deaths.toLocaleString("en-US")}</span> Deaths</li>
+                        <li><span class="mapRecovered">${feature.properties.recovered.toLocaleString("en-US")}</span> Recovered</li>
+                    </ur>
+                `;
+                layer.bindPopup(html, {closeButton: false, offset: L.point(0, -10)});
+                layer.on("mouseover", function() {layer.openPopup();});
+                layer.on("mouseout", function() {layer.closePopup();});
+                
+            }
+
+        }
+
+
+        function pointToLayer(feature, latlnt) {
+            return L.circleMarker(latlnt, {fillOpacity: 0.6, color: "red", weight: 0});
+        }
+
+        function getStyle(feature) {
+            const cases = feature.properties.cases;
+            
+            if (cases < 1000) {
+                return {radius: 10};
+            } else if (cases < 10000) {
+                return {radius: 15};
+            } else if (cases < 100000) {
+                return {radius: 20};
+            } else if (cases < 1000000) {
+                return {radius: 25};
+            } else{
+                return {radius: 30};
+            }
+        }
+        
+        // add geoJson data to map
+        var featuresLayer = L.geoJson(geoJson, {
+            onEachFeature: onEachFeature,
+            pointToLayer: pointToLayer,
+            style: getStyle
+
+        }).addTo(myMap);
+    })
+    
+</script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

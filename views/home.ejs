@@ -1,0 +1,45 @@
+<%- include("partials/header.ejs"); %>
+
+
+<h1 class="top-heading">Global situation</h1>
+<div class="top-float-container">
+    <div class="top-float-child global1">
+        <p class="global-charts-heading"> <%= totalData.cases.toLocaleString("en-US"); %> </p>
+        <p class="global-charts-des">confirmed cases</p>
+    </div>
+
+    <div class="top-float-child global2">
+        <canvas id="globalCasesChart"></canvas>
+        <script id="globalDailyCases" type="text/javascript" src="js/globalDailyCases.js" data-search='<%- JSON.stringify(dailyData)%>'></script>
+    </div>
+
+</div>
+
+
+<div class="top-float-container">
+    <div class="top-float-child global1">
+        <p class="global-charts-heading"> <%= totalData.deaths.toLocaleString("en-US"); %> </p>
+        <p class="global-charts-des">deaths cases</p>
+    </div>
+
+    <div class="top-float-child global2">
+        <canvas id="globalDeathsChart"></canvas>
+        <script id="globalDailyDeaths" type="text/javascript" src="js/globalDailyDeaths.js" data-search='<%- JSON.stringify(dailyData)%>'></script>
+    </div>
+
+</div>
+
+
+
+<div class="float-container">
+    <div class="float-child region">
+        <h1 class="region-charts-heading">Region situation</h1>
+        <canvas id="continentChart"></canvas>
+        <script id="regionDailyCases" type="text/javascript" src="js/regionBarChart.js" data-search='<%= JSON.stringify(continentData)%>'></script>
+    </div>
+    <div class="float-child country">
+        <h1 class="country-charts-heading">Hardest hit country</h1>
+        <canvas id="hardestHitChart"></canvas>
+        <script id="hardestHit" type="text/javascript" src="js/hardestHit.js" data-search='<%= JSON.stringify(hardestData)%>'></script>
+    </div>
+</div>

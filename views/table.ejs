@@ -1,0 +1,39 @@
+<%- include("partials/header.ejs"); %>
+
+
+
+<div class="table-container">
+    <h3>Situation by Country, Territory & Area</h3>
+    <table id="myTable" class="display"></table>
+</div>
+<script>
+
+    const columns = [];
+
+    $.when(worldData).done(function() {
+        const data = worldData.responseJSON;
+
+        for (const [key, value] of Object.entries(data[0])) {
+            if (key == "country" || key == "cases" || key == "deaths" || key == "recovered" || key == "casesPerOneMillion") {
+                const items = {};
+                items.data = key;
+                items.title = key;
+                columns.push(items);
+            }  
+        }
+        
+        
+        $(function() {
+            $("#myTable").DataTable({
+                data: data,
+                paging: false,
+                "scrollY": "750px",
+                info: false,
+                searching: false,
+                order: [1, "desc"],
+                columns: columns,        
+            })
+        })
+    });
+
+</script>
